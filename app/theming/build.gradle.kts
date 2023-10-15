@@ -4,12 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.alterjuice.resources"
+    namespace = "com.alterjuice.theming"
     compileSdk = Config.compileSdk
 
     defaultConfig {
         minSdk = Config.minSdk
-        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -27,6 +26,12 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
     kotlinOptions {
         jvmTarget = "1.8"

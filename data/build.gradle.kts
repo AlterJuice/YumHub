@@ -4,12 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.alterjuice.resources"
+    namespace = "com.alterjuice.data"
     compileSdk = Config.compileSdk
 
     defaultConfig {
         minSdk = Config.minSdk
-        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
