@@ -10,4 +10,5 @@ java {
 
 dependencies {
     implementation(Libs.Gson.library)
+    implementation(Libs.Kotlin.coroutinesCore)
 }
