@@ -69,6 +69,7 @@ dependencies {
     // implementation("androidx.compose.material3:material3:1.2.0-alpha08") // Stable: 1.1.1
 
     implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation(project(":feature:chat_assistant"))
 
     testImplementation(Libs.Testing.junit)
     androidTestImplementation(Libs.Testing.junitExt)

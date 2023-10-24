@@ -23,7 +23,7 @@ fun BrandText(
         text = remember { "YumHub" },
         modifier = Modifier,
         color = Color(0xFF597719),
-        fontStyle = FontStyle(R.font.kyiv_type_sans_light),
+        fontStyle = FontStyle(R.font.kyiv_type_sans_regular),
         fontWeight = FontWeight.W300,
         lineHeight = 24.sp
     )
@@ -45,7 +45,7 @@ fun BrandText2(
         },
         modifier = Modifier,
         color = Color.Unspecified,
-        fontStyle = FontStyle(R.font.kyiv_type_sans_light),
+        fontStyle = FontStyle(R.font.kyiv_type_sans_regular),
         fontWeight = FontWeight.W300,
         lineHeight = 24.sp
     )

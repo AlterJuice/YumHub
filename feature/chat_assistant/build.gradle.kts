@@ -5,11 +5,10 @@ plugins {
 
 android {
     namespace = "com.alterjuice.chat_assistant"
-    compileSdk = 33
+    compileSdk = Config.compileSdk
 
     defaultConfig {
-        minSdk = 28
-        targetSdk = 33
+        minSdk = Config.minSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -28,6 +27,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = Versions.composeCompiler
+    }
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -35,10 +40,32 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation(Libs.AndroidX.coreKtx)
+    implementation(Libs.AndroidX.appCompat)
+    implementation(Libs.AndroidX.material)
+
+    val platform = platform(Libs.AndroidX.Compose.Bom.composeBOM)
+    implementation(platform)
+    debugImplementation(platform)
+    implementation(Libs.AndroidX.Compose.Bom.composeUI)
+    implementation(Libs.AndroidX.Compose.Bom.composeMaterial3)
+    debugImplementation(Libs.AndroidX.Compose.Bom.composeUiTooling)
+    implementation(Libs.AndroidX.Compose.Bom.composeUiToolingPreview)
+    implementation(Libs.AndroidX.Compose.activityCompose)
+    implementation(Libs.AndroidX.Compose.Bom.composeRuntime)
+    implementation(Libs.AndroidX.Compose.navigation)
+    implementation(Libs.AndroidX.Compose.Accompanist.insets)
+    implementation(Libs.AndroidX.Compose.Accompanist.insetsUI)
+    implementation(Libs.AndroidX.Compose.Accompanist.pager)
+    implementation(Libs.AndroidX.Compose.Accompanist.pagerIndicator)
+    implementation(Libs.AndroidX.Compose.constraintLayout)
+
+    testImplementation(Libs.Testing.junit)
+    androidTestImplementation(Libs.Testing.junitExt)
+    androidTestImplementation(Libs.Testing.espressoCore)
+
+    implementation(project(":utils:compose_utils"))
+
+    implementation("com.aallam.openai:openai-client:3.0.0")
+    implementation("io.ktor:ktor-client-android:2.2.4")
 }
