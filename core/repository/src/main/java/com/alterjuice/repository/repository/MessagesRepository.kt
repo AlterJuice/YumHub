@@ -1,10 +1,10 @@
 package com.alterjuice.repository.repository
 
 import com.alterjuice.domain.model.messages.Message
-import com.alterjuice.domain.repository.MessagesRepository
 import com.alterjuice.domain.repository.MessagesRepositoryExtended
 import com.alterjuice.repository.datasources.MessagesLocalDataSource
 import com.alterjuice.repository.datasources.MessagesRemoteDataSource
+import com.alterjuice.utils.extensions.onCompletion
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -35,6 +35,3 @@ internal class MessagesRepositoryImpl(
         local.saveMessage(message)
     }
 }
-
-fun <T> Result<T>.onCompletion(block: () -> Unit)
-    = this.onSuccess { block() }.onFailure { block() }
