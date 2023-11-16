@@ -13,11 +13,12 @@ checkPropertyFileExistsOrThrow(yumHubPropsFile) { file ->
 }
 
 android {
-    namespace = "com.alterjuice.chat_assistant"
+    namespace = "com.alterjuice.network"
     compileSdk = Config.compileSdk
 
     defaultConfig {
         minSdk = Config.minSdk
+        targetSdk = Config.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -30,9 +31,21 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            yumHubProps.getFieldValueOrThrow(YumHubProperties.RELEASE_GOOGLE_KEY) { _, value ->
+                buildConfigField("String", "GOOGLE_KEY", value.toString())
+            }
+        }
+
+        debug {
+            yumHubProps.getFieldValueOrThrow(YumHubProperties.DEBUG_GOOGLE_KEY) { _, value ->
+                buildConfigField("String", "GOOGLE_KEY", value.toString())
+            }
         }
 
         all {
+            yumHubProps.getFieldValueOrThrow(YumHubProperties.PIXABAY_API_KEY) { keyName, value ->
+                buildConfigField("String", keyName, value.toString())
+            }
             yumHubProps.getFieldValueOrThrow(YumHubProperties.OPEN_AI_API_KEY) { keyName, value ->
                 buildConfigField("String", keyName, value.toString())
             }
@@ -41,12 +54,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -59,32 +66,17 @@ dependencies {
     implementation(Libs.AndroidX.appCompat)
     implementation(Libs.AndroidX.material)
 
-    val platform = platform(Libs.AndroidX.Compose.Bom.composeBOM)
-    implementation(platform)
-    debugImplementation(platform)
-    implementation(Libs.AndroidX.Compose.Bom.composeUI)
-    implementation(Libs.AndroidX.Compose.Bom.composeMaterial3)
-    debugImplementation(Libs.AndroidX.Compose.Bom.composeUiTooling)
-    implementation(Libs.AndroidX.Compose.Bom.composeUiToolingPreview)
-    implementation(Libs.AndroidX.Compose.activityCompose)
-    implementation(Libs.AndroidX.Compose.Bom.composeRuntime)
-    implementation(Libs.AndroidX.Compose.navigation)
-    implementation(Libs.AndroidX.Compose.Accompanist.insets)
-    implementation(Libs.AndroidX.Compose.Accompanist.insetsUI)
-    implementation(Libs.AndroidX.Compose.Accompanist.pager)
-    implementation(Libs.AndroidX.Compose.Accompanist.pagerIndicator)
-    implementation(Libs.AndroidX.Compose.constraintLayout)
+    implementation(platform(Libs.Network.OkHTTP.okHttpBom))
+    implementation(Libs.Network.OkHTTP.interceptor)
+    implementation(Libs.Network.OkHTTP.retrofit)
+    implementation(Libs.Network.OkHTTP.retrofitConverter)
+    implementation(Libs.Gson.retrofitConverter)
 
     implementation(Libs.Koin.core)
     implementation(Libs.Koin.android)
 
 
-    testImplementation(Libs.Testing.junit)
-    androidTestImplementation(Libs.Testing.junitExt)
-    androidTestImplementation(Libs.Testing.espressoCore)
-
-    implementation(project(":utils:compose_utils"))
-
-    implementation("com.aallam.openai:openai-client:3.0.0")
-    implementation("io.ktor:ktor-client-android:2.2.4")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }

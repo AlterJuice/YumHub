@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class ChatAssistantViewModel {
 
 
-    val openAI = OpenAI("")
+    val openAI = OpenAI(BuildConfig.OPEN_AI_API_KEY)
     val message = MutableStateFlow("")
 
     @OptIn(BetaOpenAI::class)
