@@ -4,13 +4,25 @@ plugins {
     kotlin("kapt")
 }
 
+kapt {
+    arguments {
+        arg("room.schemaLocation", "$projectDir/schemas".toString())
+    }
+}
+
 android {
     namespace = "com.alterjuice.database"
-    compileSdk = 33
+    compileSdk = Config.compileSdk
 
     defaultConfig {
-        minSdk = 28
-        targetSdk = 33
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["room.schemaLocation"] =
+                    "$projectDir/schemas"
+            }
+        }
+        minSdk = Config.minSdk
+        targetSdk = Config.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
