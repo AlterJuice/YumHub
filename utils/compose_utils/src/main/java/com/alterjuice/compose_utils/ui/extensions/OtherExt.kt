@@ -1,5 +1,6 @@
 package com.alterjuice.compose_utils.ui.extensions
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.*
@@ -14,6 +15,8 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Density
 import androidx.constraintlayout.compose.ConstraintLayoutScope
+import com.alterjuice.android_utils.Str
+import com.alterjuice.android_utils.get
 
 
 @Composable
@@ -72,3 +75,21 @@ fun <T> rememberLambda(lambdaBlock: T): T {
 
 @Composable
 inline fun ConstraintLayoutScope.rememberCreateRef() = remember { createRef() }
+
+@Composable
+fun Str.get(): String {
+    val context = LocalContext.current
+    return this.get(context)
+}
+
+
+@Composable
+fun rememberStr(str: Str): String {
+    val context = LocalContext.current
+    return remember(str) { str.get(context) }
+}
+
+@Composable
+fun rememberStr(context: Context, str: Str): String {
+    return remember(str) { str.get(context) }
+}

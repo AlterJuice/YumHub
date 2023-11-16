@@ -43,6 +43,7 @@ dependencies {
     implementation(Libs.AndroidX.coreKtx)
     implementation(Libs.AndroidX.appCompat)
     implementation(Libs.AndroidX.material)
+    implementation(project(mapOf("path" to ":utils:android_utils")))
 
     val platform = platform(Libs.AndroidX.Compose.Bom.composeBOM)
     implementation(platform)
