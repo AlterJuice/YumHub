@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.alterjuice.user_profile"
+    namespace = "com.alterjuice.meals"
     compileSdk = Config.compileSdk
 
     defaultConfig {
@@ -42,6 +42,30 @@ dependencies {
 
     implementation(Libs.AndroidX.coreKtx)
     implementation(Libs.AndroidX.appCompat)
+    implementation(project(mapOf("path" to ":domain")))
+    implementation(project(mapOf("path" to ":core:network")))
+    implementation(project(mapOf("path" to ":core:navigation")))
+
+    val platform = platform(Libs.AndroidX.Compose.Bom.composeBOM)
+    implementation(platform)
+    debugImplementation(platform)
+    debugImplementation(Libs.AndroidX.Compose.Bom.composeUiTooling)
+    implementation(Libs.AndroidX.Compose.Bom.composeUI)
+    implementation(Libs.AndroidX.Compose.Bom.composeMaterial3)
+    implementation(Libs.AndroidX.Compose.Bom.composeUiToolingPreview)
+    implementation(Libs.AndroidX.Compose.activityCompose)
+    implementation(Libs.AndroidX.Compose.Bom.composeRuntime)
+    implementation(Libs.AndroidX.Compose.navigation)
+    implementation(Libs.AndroidX.Compose.constraintLayout)
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation(project(":app:theming"))
+    implementation(project(":utils:compose_utils"))
+
+    implementation(Libs.Koin.core)
+    implementation(Libs.Koin.android)
+    implementation(Libs.Gson.library)
+
 
     testImplementation(Libs.Testing.junit)
     androidTestImplementation(Libs.Testing.junitExt)
