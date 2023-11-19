@@ -54,7 +54,12 @@ dependencies {
 
     implementation(Libs.AndroidX.Room.runtime)
     implementation(Libs.AndroidX.Room.ktx)
+
+    implementation(Libs.Koin.core)
+    implementation(Libs.Koin.android)
+
     implementation(project(mapOf("path" to ":domain")))
+    implementation(project(mapOf("path" to ":utils:android_utils")))
     kapt(Libs.AndroidX.Room.compiler)
 
     testImplementation(Libs.Testing.junit)
