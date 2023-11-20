@@ -18,11 +18,11 @@ fun getNormalizedStartDate(timeSec: Long): Long {
 
 @Dao
 interface InternalWaterBalanceDao {
-    @Query("SELECT * FROM WaterBalance WHERE dayStartTimestampSec = :dayTimestampSec")
+    @Query("SELECT * FROM WaterBalance WHERE dayStartTimestampSec = :dayTimestampSec LIMIT 1")
     fun internalGetWaterBalanceFlowForDate(dayTimestampSec: Long): Flow<List<WaterBalanceDB>>
 
-    @Query("SELECT * FROM WaterBalance WHERE dayStartTimestampSec = :dayTimestampSec")
-    suspend fun internalGetWaterBalanceForDate(dayTimestampSec: Long): WaterBalanceDB
+    @Query("SELECT * FROM WaterBalance WHERE dayStartTimestampSec = :dayTimestampSec LIMIT 1")
+    suspend fun internalGetWaterBalanceForDate(dayTimestampSec: Long): List<WaterBalanceDB>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun internalUpdateOrAddWaterBalanceForDate(waterBalanceDB: WaterBalanceDB)
@@ -40,16 +40,16 @@ interface WaterBalanceDao: InternalWaterBalanceDao {
     }
 
 
-    suspend fun getWaterBalanceForDate(dayTimestampSec: Long): WaterBalanceDB {
+    suspend fun getWaterBalanceForDate(dayTimestampSec: Long): List<WaterBalanceDB> {
         return internalGetWaterBalanceForDate(getNormalizedStartDate(
             dayTimestampSec
         ))
     }
 
     suspend fun updateOrAddWaterBalanceForDate(waterBalance: WaterBalanceDB) {
-        val normalizedDate = getNormalizedStartDate(waterBalance.dateTimestampSec)
+        val normalizedDate = getNormalizedStartDate(waterBalance.dayTimestampSec)
         return internalUpdateOrAddWaterBalanceForDate(waterBalance.copy(
-            dateTimestampSec = normalizedDate
+            dayTimestampSec = normalizedDate
         ))
     }
 }

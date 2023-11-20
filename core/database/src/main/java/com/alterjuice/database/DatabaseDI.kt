@@ -1,7 +1,9 @@
 package com.alterjuice.database
 
 import com.alterjuice.android_utils.DIModulesHub
+import com.alterjuice.database.meals_history.MealsHistoryDao
 import com.alterjuice.database.messages.MessagesDao
+import com.alterjuice.database.water_balance.WaterBalanceDao
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
@@ -16,6 +18,12 @@ object DatabaseDI: DIModulesHub {
         }
         single<MessagesDao> {
             get<YumHubDatabase>().messagesEntities()
+        }
+        single<WaterBalanceDao> {
+            get<YumHubDatabase>().waterBalanceEntities()
+        }
+        single<MealsHistoryDao> {
+            get<YumHubDatabase>().mealsInfoEntities()
         }
     }
 }
