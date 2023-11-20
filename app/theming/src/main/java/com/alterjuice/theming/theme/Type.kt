@@ -1,10 +1,12 @@
-package com.alterjuice.yumhub.ui.theme
+package com.alterjuice.theming.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.alterjuice.theming.theme.model.ElevationsSchema
 
 // Set of Material typography styles to start with
 val Typography = Typography(
@@ -14,8 +16,8 @@ val Typography = Typography(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
+    ),
+    // Other default text styles to override
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -30,5 +32,12 @@ val Typography = Typography(
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     )
-    */
+)
+
+val mainElevationsSchema = ElevationsSchema(
+    extraSmall = 2.dp,
+    small = 4.dp,
+    medium = 7.dp,
+    large = 14.dp,
+    extraLarge = 20.dp
 )

@@ -3,10 +3,12 @@ package com.alterjuice.compose_utils.ui.extensions
 import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -14,6 +16,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.constraintlayout.compose.ConstraintLayoutScope
 import com.alterjuice.android_utils.Str
 import com.alterjuice.android_utils.get
@@ -38,6 +41,19 @@ fun <T> Modifier.subscribeToLayoutUpdates(
     }
 }
 
+fun Modifier.subscribeToLayoutRect(
+    state: MutableState<Rect?>,
+    transformer: (LayoutCoordinates) -> Rect
+): Modifier {
+    return this.subscribeToLayoutUpdates(state, transformer)
+}
+
+@Composable
+fun rememberMutableLayoutCoordinates() = remember { mutableStateOf<LayoutCoordinates?>(null) }
+
+@Composable
+fun rememberMutableRect() = remember { mutableStateOf<Rect?>(null) }
+
 @Composable
 fun <T> rememberDerivedStateOf(key1: Any?, calculation: () -> T): State<T> {
     return remember(key1) { derivedStateOf(calculation) }
@@ -50,6 +66,15 @@ fun Modifier.emptyClickable() = clickable(
     indication = null,
     onClick = rememberLambda { /*Nothing to do*/ }
 )
+
+@Composable
+fun surfaceColorAtElevation(color: Color, elevation: Dp): Color {
+    return if (color == MaterialTheme.colorScheme.surface) {
+        MaterialTheme.colorScheme.surfaceColorAtElevation(elevation)
+    } else {
+        color
+    }
+}
 
 @Composable
 fun <T> rememberDerivedStateOf(key1: Any?, key2: Any?, calculation: () -> T): State<T> {
@@ -67,6 +92,13 @@ fun <R> rememberWithDensity(key: Any = Unit, block: Density.() -> R): R {
     val density = LocalDensity.current
     return remember(key) { with(density) { block() } }
 }
+
+@Composable
+fun <R> rememberWithDensity(key: Any = Unit, key2: Any = Unit, block: Density.() -> R): R {
+    val density = LocalDensity.current
+    return remember(key, key2) { with(density) { block() } }
+}
+
 
 @Composable
 fun <T> rememberLambda(lambdaBlock: T): T {
