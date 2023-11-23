@@ -55,17 +55,17 @@ fun prefLongValue(
 fun prefStringValue(
     preferences: SharedPreferences,
     key: String,
-    defaultValue: String
-): PreferencesValue<String> = prefValue(
-    getter = { preferences.getString(key, defaultValue)?: defaultValue },
+    defaultValue: String?
+): PreferencesValue<String?> = prefValue(
+    getter = { preferences.getString(key, defaultValue) },
     setter = { preferences.edit { putString(key, it) } }
 )
 
 fun prefStringValue(
     preferences: SharedPreferences,
     key: String,
-    defaultValue: Set<String>
-): PreferencesValue<Set<String>> = prefValue(
-    getter = { preferences.getStringSet(key, defaultValue)?: defaultValue },
+    defaultValue: Set<String>?
+): PreferencesValue<Set<String>?> = prefValue(
+    getter = { preferences.getStringSet(key, defaultValue) },
     setter = { preferences.edit { putStringSet(key, it) } }
 )

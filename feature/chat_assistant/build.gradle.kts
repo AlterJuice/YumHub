@@ -77,6 +77,7 @@ dependencies {
 
     implementation(Libs.Koin.core)
     implementation(Libs.Koin.android)
+    implementation(Libs.Koin.compose)
 
 
     testImplementation(Libs.Testing.junit)

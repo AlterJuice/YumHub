@@ -60,6 +60,7 @@ dependencies {
 
     implementation(project(mapOf("path" to ":domain")))
     implementation(project(mapOf("path" to ":utils:android_utils")))
+    implementation(project(mapOf("path" to ":utils:utils")))
     kapt(Libs.AndroidX.Room.compiler)
 
     testImplementation(Libs.Testing.junit)

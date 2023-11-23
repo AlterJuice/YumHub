@@ -24,8 +24,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = Config.javaVersion
+        targetCompatibility = Config.javaVersion
     }
     buildFeatures {
         compose = true
@@ -34,7 +34,7 @@ android {
         kotlinCompilerExtensionVersion = Versions.composeCompiler
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = Config.jvmVersion
     }
 }
 
@@ -55,10 +55,6 @@ dependencies {
     implementation(Libs.AndroidX.Compose.activityCompose)
     implementation(Libs.AndroidX.Compose.Bom.composeRuntime)
     implementation(Libs.AndroidX.Compose.navigation)
-    implementation(Libs.AndroidX.Compose.Accompanist.insets)
-    implementation(Libs.AndroidX.Compose.Accompanist.insetsUI)
-    implementation(Libs.AndroidX.Compose.Accompanist.pager)
-    implementation(Libs.AndroidX.Compose.Accompanist.pagerIndicator)
     implementation(Libs.AndroidX.Compose.constraintLayout)
     // implementation("androidx.compose.material3:material3:1.2.0-alpha08") // Stable: 1.1.1
 
