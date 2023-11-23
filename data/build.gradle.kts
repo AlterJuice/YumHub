@@ -38,6 +38,14 @@ dependencies {
     implementation(Libs.AndroidX.appCompat)
     implementation(Libs.AndroidX.material)
 
+    implementation(Libs.Koin.core)
+    implementation(Libs.Koin.android)
+    implementation(Libs.Gson.library)
+
+    implementation(project(mapOf("path" to ":utils:android_utils")))
+    implementation(project(mapOf("path" to ":domain")))
+    implementation(project(mapOf("path" to ":core:network")))
+
     testImplementation(Libs.Testing.junit)
     androidTestImplementation(Libs.Testing.junitExt)
     androidTestImplementation(Libs.Testing.espressoCore)
