@@ -1,5 +1,6 @@
-package com.alterjuice.network.pixabay.model
+package com.alterjuice.network.pixabay.model.response
 
+import com.alterjuice.network.pixabay.model.ImageQueryResponseItemDTO
 import com.google.gson.annotations.SerializedName
 
 data class ImagesQueryResponse(

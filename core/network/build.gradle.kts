@@ -49,6 +49,13 @@ android {
             yumHubProps.getFieldValueOrThrow(YumHubProperties.OPEN_AI_API_KEY) { keyName, value ->
                 buildConfigField("String", keyName, value.toString())
             }
+
+            yumHubProps.getFieldValueOrThrow(YumHubProperties.NUTRITIONIX_APP_KEY) { keyName, value ->
+                buildConfigField("String", keyName, value.toString())
+            }
+            yumHubProps.getFieldValueOrThrow(YumHubProperties.NUTRITIONIX_APP_ID) { keyName, value ->
+                buildConfigField("String", keyName, value.toString())
+            }
         }
     }
     compileOptions {
@@ -74,6 +81,9 @@ dependencies {
 
     implementation(Libs.Koin.core)
     implementation(Libs.Koin.android)
+    implementation(Libs.Gson.library)
+    implementation(project(mapOf("path" to ":utils:android_utils")))
+    implementation(project(mapOf("path" to ":domain")))
 
 
     testImplementation("junit:junit:4.13.2")

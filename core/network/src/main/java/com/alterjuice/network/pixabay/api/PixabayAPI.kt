@@ -1,7 +1,7 @@
 package com.alterjuice.network.pixabay.api
 
 
-import com.alterjuice.network.pixabay.model.ImagesQueryResponse
+import com.alterjuice.network.pixabay.model.response.ImagesQueryResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
