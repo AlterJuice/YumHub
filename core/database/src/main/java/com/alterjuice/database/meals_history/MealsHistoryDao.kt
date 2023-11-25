@@ -2,13 +2,8 @@ package com.alterjuice.database.meals_history
 
 import androidx.room.Dao
 import androidx.room.Query
+import com.alterjuice.utils.DateTimeUtils
 import kotlinx.coroutines.flow.Flow
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-
-fun defaultZoneIDOffset() = ZoneId.systemDefault().rules.getOffset(Instant.now())
 
 @Dao
 interface MealsHistoryDao {
@@ -22,12 +17,8 @@ interface MealsHistoryDao {
     @Query("DELETE FROM MealsHistory WHERE id = :mealID")
     suspend fun deleteMealFromHistoryByID(mealID: Int)
 
-    suspend fun getMealsHistoryForDay(dayTimestampSec: Long): List<MealsHistoryDB> {
-        ZoneId.systemDefault().rules.getOffset(Instant.now())
-        val date = LocalDateTime
-            .ofEpochSecond(dayTimestampSec, 0, defaultZoneIDOffset())
-            .toLocalDate()
-        val startDayAt = date.atStartOfDay().toEpochSecond(defaultZoneIDOffset())
+    suspend fun getMealsHistoryForDate(dayTimestampSec: Long): List<MealsHistoryDB> {
+        val startDayAt = DateTimeUtils.getNormalizedStartDate(dayTimestampSec)
         val endDayAt = startDayAt + (24 * 60 * 60)
         return getMealsHistoryBetween(
             leftBoundTime = startDayAt,
@@ -36,15 +27,12 @@ interface MealsHistoryDao {
     }
 
     suspend fun getMealsHistoryForToday(): List<MealsHistoryDB> {
-        val startDayAt = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
-        return getMealsHistoryForDay(startDayAt)
+        val startDayAt = DateTimeUtils.getNormalizedStartDateToday()
+        return getMealsHistoryForDate(startDayAt)
     }
 
-    fun getMealsHistoryForDayFlow(dayTimestampSec: Long): Flow<List<MealsHistoryDB>> {
-        val date = LocalDateTime
-            .ofEpochSecond(dayTimestampSec, 0, defaultZoneIDOffset())
-            .toLocalDate()
-        val startDayAt = date.atStartOfDay().toEpochSecond(defaultZoneIDOffset())
+    fun getMealsHistoryForDateFlow(dayTimestampSec: Long): Flow<List<MealsHistoryDB>> {
+        val startDayAt = DateTimeUtils.getNormalizedStartDate(dayTimestampSec)
         val endDayAt = startDayAt + (24 * 60 * 60)
         return getMealsHistoryFlowBetween(
             leftBoundTime = startDayAt,
@@ -53,7 +41,7 @@ interface MealsHistoryDao {
     }
 
     fun getMealsHistoryForTodayFlow(): Flow<List<MealsHistoryDB>> {
-        val startDayAt = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toEpochSecond()
-        return getMealsHistoryForDayFlow(startDayAt)
+        val startDayAt = DateTimeUtils.getNormalizedStartDateToday()
+        return getMealsHistoryForDateFlow(startDayAt)
     }
 }

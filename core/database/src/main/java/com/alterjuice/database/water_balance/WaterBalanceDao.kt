@@ -4,17 +4,10 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.alterjuice.database.meals_history.defaultZoneIDOffset
+import com.alterjuice.utils.DateTimeUtils
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDateTime
+import kotlinx.coroutines.flow.mapNotNull
 
-fun getNormalizedStartDate(timeSec: Long): Long {
-    return LocalDateTime
-        .ofEpochSecond(timeSec, 0, defaultZoneIDOffset())
-        .toLocalDate()
-        .atStartOfDay()
-        .toEpochSecond(defaultZoneIDOffset())
-}
 
 @Dao
 interface InternalWaterBalanceDao {
@@ -33,21 +26,21 @@ interface InternalWaterBalanceDao {
 interface WaterBalanceDao: InternalWaterBalanceDao {
 
     // Will be only one or zero items in list
-    fun getWaterBalanceFlowForDate(dayTimestampSec: Long): Flow<List<WaterBalanceDB>> {
-        return internalGetWaterBalanceFlowForDate(getNormalizedStartDate(
+    fun getWaterBalanceFlowForDate(dayTimestampSec: Long): Flow<WaterBalanceDB> {
+        return internalGetWaterBalanceFlowForDate(DateTimeUtils.getNormalizedStartDate(
             dayTimestampSec
-        ))
+        )).mapNotNull { it.firstOrNull() }
     }
 
 
-    suspend fun getWaterBalanceForDate(dayTimestampSec: Long): List<WaterBalanceDB> {
-        return internalGetWaterBalanceForDate(getNormalizedStartDate(
+    suspend fun getWaterBalanceForDate(dayTimestampSec: Long): WaterBalanceDB? {
+        return internalGetWaterBalanceForDate(DateTimeUtils.getNormalizedStartDate(
             dayTimestampSec
-        ))
+        )).firstOrNull()
     }
 
     suspend fun updateOrAddWaterBalanceForDate(waterBalance: WaterBalanceDB) {
-        val normalizedDate = getNormalizedStartDate(waterBalance.dayTimestampSec)
+        val normalizedDate = DateTimeUtils.getNormalizedStartDate(waterBalance.dayTimestampSec)
         return internalUpdateOrAddWaterBalanceForDate(waterBalance.copy(
             dayTimestampSec = normalizedDate
         ))

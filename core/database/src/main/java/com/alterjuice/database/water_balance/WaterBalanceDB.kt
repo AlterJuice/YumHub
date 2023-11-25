@@ -9,6 +9,5 @@ import androidx.room.PrimaryKey
 data class WaterBalanceDB(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "dayStartTimestampSec") val dayTimestampSec: Long,
-
     @ColumnInfo(name="balance") val balanceML: Int,
 )
