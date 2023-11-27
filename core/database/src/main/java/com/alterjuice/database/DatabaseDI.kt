@@ -5,11 +5,11 @@ import com.alterjuice.database.category_history.CategoryEatenHistoryDao
 import com.alterjuice.database.meals_history.MealsHistoryDao
 import com.alterjuice.database.messages.MessagesDao
 import com.alterjuice.database.nutrients_history.NutrientsHistoryDao
-import com.alterjuice.database.water_balance.WaterBalanceDao
+import com.alterjuice.database.user_measurements.UserMeasurementsHistoryDao
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
-object DatabaseDI: DIModulesHub {
+object DatabaseDI : DIModulesHub {
     override fun modules() = arrayOf(
         databaseModule()
     )
@@ -21,9 +21,6 @@ object DatabaseDI: DIModulesHub {
         single<MessagesDao> {
             get<YumHubDatabase>().messagesEntities()
         }
-        single<WaterBalanceDao> {
-            get<YumHubDatabase>().waterBalanceEntities()
-        }
         single<MealsHistoryDao> {
             get<YumHubDatabase>().mealsInfoEntities()
         }
@@ -32,6 +29,9 @@ object DatabaseDI: DIModulesHub {
         }
         single<CategoryEatenHistoryDao> {
             get<YumHubDatabase>().categoryEatenHistoryEntities()
+        }
+        single<UserMeasurementsHistoryDao> {
+            get<YumHubDatabase>().measurementsHistoryDao()
         }
     }
 }

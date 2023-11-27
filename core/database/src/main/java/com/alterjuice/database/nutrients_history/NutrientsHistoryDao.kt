@@ -5,13 +5,13 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.alterjuice.domain.model.common.YumHubMeal
-import com.alterjuice.domain.model.nutrition.valueOrZero
+import com.alterjuice.domain.model.nutrition.NutritionEnum
 import kotlinx.coroutines.flow.Flow
 
 
 @Dao
 interface NutrientsHistoryDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = NutrientsHistoryDB::class)
     suspend fun insertNutrientHistory(nutrientsHistoryDB: NutrientsHistoryDB)
 
     // Will be only one or zero items in list
@@ -31,19 +31,22 @@ interface NutrientsHistoryDao {
             NutrientsHistoryDB(dayTimestampSec)
         } else {
             old.copy(
-                proteins = old.proteins + meal.protein.valueOrZero,
-                energy = old.energy + meal.energyCalories.valueOrZero,
-                carbs = old.carbs + meal.carbs.valueOrZero,
-                fat = old.fat + meal.fat.valueOrZero,
-                fiber = old.fiber + meal.fiber.valueOrZero,
-                sugars = old.sugars + meal.sugars.valueOrZero,
-                sugarsAdded = old.sugarsAdded + meal.sugarsAdded.valueOrZero
+                proteins = old.proteins + meal.withServings(1.0, NutritionEnum.Protein),
+                energy = old.energy + meal.withServings(1.0, NutritionEnum.EnergyCalories),
+                carbs = old.carbs + meal.withServings(1.0, NutritionEnum.Carbs),
+                fat = old.fat + meal.withServings(1.0, NutritionEnum.Fat),
+                fiber = old.fiber + meal.withServings(1.0, NutritionEnum.Fiber),
+                sugars = old.sugars + meal.withServings(1.0, NutritionEnum.Sugars),
+                sugarsAdded = old.sugarsAdded + meal.withServings(1.0, NutritionEnum.SugarsAdded)
             )
         }
         insertNutrientHistory(updated)
     }
 
-    suspend fun updateNutrientsHistoryByRemovingMealForDate(meal: YumHubMeal, dayTimestampSec: Long) {
+    suspend fun updateNutrientsHistoryByRemovingMealForDate(
+        meal: YumHubMeal,
+        dayTimestampSec: Long
+    ) {
         val old = getNutrientsHistoryForDate(dayTimestampSec).firstOrNull()
         val updated = if (old == null) {
             // we should just create empty object to add it to history. This won't be even
@@ -51,13 +54,13 @@ interface NutrientsHistoryDao {
             NutrientsHistoryDB(dayTimestampSec)
         } else {
             old.copy(
-                proteins = old.proteins - meal.protein.valueOrZero,
-                energy = old.energy - meal.energyCalories.valueOrZero,
-                carbs = old.carbs - meal.carbs.valueOrZero,
-                fat = old.fat - meal.fat.valueOrZero,
-                fiber = old.fiber - meal.fiber.valueOrZero,
-                sugars = old.sugars - meal.sugars.valueOrZero,
-                sugarsAdded = old.sugarsAdded - meal.sugarsAdded.valueOrZero
+                proteins = old.proteins - meal.withServings(1.0, NutritionEnum.Protein),
+                energy = old.energy - meal.withServings(1.0, NutritionEnum.EnergyCalories),
+                carbs = old.carbs - meal.withServings(1.0, NutritionEnum.Carbs),
+                fat = old.fat - meal.withServings(1.0, NutritionEnum.Fat),
+                fiber = old.fiber - meal.withServings(1.0, NutritionEnum.Fiber),
+                sugars = old.sugars - meal.withServings(1.0, NutritionEnum.Sugars),
+                sugarsAdded = old.sugarsAdded - meal.withServings(1.0, NutritionEnum.SugarsAdded)
             )
         }
         insertNutrientHistory(updated)
