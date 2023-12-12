@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MealsHistoryDao {
 
+    @Query("SELECT * FROM MealsHistory")
+    suspend fun getAllMeals(): List<MealsHistoryDB>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE, entity = MealsHistoryDB::class)
     suspend fun addMealToHistory(mealDB: MealsHistoryDB)
 
@@ -29,7 +32,7 @@ interface MealsHistoryDao {
     suspend fun deleteMealFromHistoryByID(dateTimestampMs: Long)
 
     suspend fun getMealsHistoryForDate(timeMs: Long): List<MealsHistoryDB> {
-        val startDayAtMs = DateTimeUtils.getNormalizedStartDateFromMsToMs(timeMs).times(1000)
+        val startDayAtMs = DateTimeUtils.getNormalizedStartDateFromMsToMs(timeMs)
         val endDayAtMs = startDayAtMs + (24 * 60 * 59 * 1000)
         return getMealsHistoryBetween(
             leftBoundTime = startDayAtMs,

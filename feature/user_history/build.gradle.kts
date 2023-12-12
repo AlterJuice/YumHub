@@ -60,7 +60,7 @@ dependencies {
     implementation(Libs.AndroidX.Compose.constraintLayout)
 
     implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation(project(":app:theming"))
+    implementation(project(":theming"))
     implementation(project(":utils:compose_utils"))
 
     implementation(Libs.Koin.core)

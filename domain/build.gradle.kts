@@ -11,4 +11,5 @@ java {
 dependencies {
     implementation(Libs.Gson.library)
     implementation(Libs.Kotlin.coroutinesCore)
+    implementation(project(mapOf("path" to ":utils:utils")))
 }

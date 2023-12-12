@@ -104,6 +104,10 @@ fun <R> rememberWithDensity(key: Any = Unit, key2: Any = Unit, block: Density.()
 fun <T> rememberLambda(lambdaBlock: T): T {
     return remember { lambdaBlock }
 }
+@Composable
+fun <T> rememberLambda(key1: Any, lambdaBlock: T): T {
+    return remember(key1) { lambdaBlock }
+}
 
 @Composable
 inline fun ConstraintLayoutScope.rememberCreateRef() = remember { createRef() }

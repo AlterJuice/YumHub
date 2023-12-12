@@ -1,8 +1,5 @@
 package com.alterjuice.domain.model.common
 
-import com.alterjuice.domain.model.nutrition.NutritionEnum
-import com.alterjuice.domain.model.nutrition.by
-
 
 enum class PredefinedYumHubMealFilters(): YumHubMealFilters {
     LESS_COOK_TIME {
@@ -44,7 +41,7 @@ enum class PredefinedYumHubMealFilters(): YumHubMealFilters {
     LOW_FAT {
         override fun check(dish: YumHubMeal): Boolean {
             // TODO CHECK Condition
-            return (dish.nutrients.by(NutritionEnum.Fat)?.value?: return false) < 5
+            return (dish.fat?.value?: return false) < 5
         }
     },
     FAST_FOOD {

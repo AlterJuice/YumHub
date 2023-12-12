@@ -42,6 +42,16 @@ dependencies {
 
     implementation(Libs.AndroidX.coreKtx)
     implementation(Libs.AndroidX.appCompat)
+    implementation(project(mapOf("path" to ":utils:android_utils")))
+    implementation(project(mapOf("path" to ":utils:compose_utils")))
+    implementation(project(mapOf("path" to ":utils:utils")))
+    implementation(project(mapOf("path" to ":theming")))
+    implementation(project(mapOf("path" to ":resources")))
+    implementation(project(mapOf("path" to ":domain")))
+    implementation(project(mapOf("path" to ":core:network")))
+    implementation(project(mapOf("path" to ":core:navigation")))
+    implementation(project(mapOf("path" to ":data")))
+    implementation(project(mapOf("path" to ":core:repository")))
 
     val platform = platform(Libs.AndroidX.Compose.Bom.composeBOM)
     implementation(platform)
@@ -60,7 +70,7 @@ dependencies {
     implementation(Libs.AndroidX.Compose.constraintLayout)
 
     implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation(project(":app:theming"))
+    implementation(project(":theming"))
     implementation(project(":utils:compose_utils"))
 
     implementation(Libs.Koin.core)

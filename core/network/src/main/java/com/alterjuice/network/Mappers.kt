@@ -10,7 +10,7 @@ import com.alterjuice.domain.model.nutrition.NutritionEnum
 import com.alterjuice.network.nutritionix.model.response.NutrientFoodItemAltMeasuresDTO
 import com.alterjuice.network.nutritionix.model.response.NutrientFoodItemDTO
 import com.alterjuice.network.nutritionix.model.response.NutrientFoodNutrientsDTO
-import com.alterjuice.network.the_meal_db.response.TheMealDBItemDTO
+import com.alterjuice.network.xanthir.MealWithRecipeDTO
 
 fun NutrientFoodNutrientsDTO.toNutrient(): NutrientsItem? {
     return this.attrId?.let { NutritionEnum.map[it] }?.let {
@@ -42,10 +42,11 @@ fun NutrientFoodItemDTO.toYumHubMeal() = YumHubMeal.NutritionIXMeal(
         brandName = brandName,
         nixBrandName = nixBrandName
     ),
-    categoriesTags = listOf()
+    categoriesTags = listOf(),
+    servingsCount = servingQty?: 1.0
 )
 
-fun TheMealDBItemDTO.toYumHubMeal() = YumHubMeal.TheMealDBItem(
+fun MealWithRecipeDTO.toYumHubMeal() = YumHubMeal.TheMealDBItem(
     id = this.id,
     foodName = this.name,
     nutrients = YumHubMeal.baseNutrientsFrom(
@@ -67,5 +68,6 @@ fun TheMealDBItemDTO.toYumHubMeal() = YumHubMeal.TheMealDBItem(
     ),
     servings = emptyList(),
     branded = null,
-    categoriesTags = tags.flatMap { MealCategories.findTagsByContent(it) }
+    categoriesTags = tags.flatMap { MealCategories.findTagsByContent(it) },
+    servingsCount = servings.toDouble()
 )

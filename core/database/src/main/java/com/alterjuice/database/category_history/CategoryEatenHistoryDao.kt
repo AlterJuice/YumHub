@@ -9,6 +9,11 @@ import com.alterjuice.domain.model.common.MealCategories
 @Dao
 interface CategoryEatenHistoryDao {
 
+
+    @Query("SELECT * FROM CategoryEatenHistory")
+    suspend fun getAllCategoriesAteCount(): List<CategoryEatenHistoryDB>
+
+
     // Will be only one or zero items in list
     @Query("SELECT ate_count FROM CategoryEatenHistory WHERE meal_category = :categoryName LIMIT 1")
     suspend fun getCategoryAteCount(categoryName: MealCategories): List<Int>

@@ -1,45 +1,50 @@
 package com.alterjuice.compose_utils.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.alterjuice.compose_utils.ui.extensions.surface
-import com.alterjuice.resources.R
 
 
 @Composable
 fun ActionBar(
-    modifier: Modifier
+    modifier: Modifier,
+    centeredTitle: String?
 ) {
-    Box(
-        modifier = Modifier
-            .then(modifier)
-            .surface(
-                shape = RectangleShape,
-                backgroundColor = Color(0xFFEEE9DB),
-                border = null,
-                elevation = 10.dp
-            )
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-        ,
+    SurfaceWithConstraints(
+        modifier = modifier,
+        shape = RectangleShape,
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        border = null,
+        shadowElevation = 10.dp,
         contentAlignment = Alignment.CenterStart
     ) {
-        BrandText(
-            modifier = Modifier
-        )
+        Box(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            BrandText2(
+                modifier = Modifier.wrapContentHeight()
+            )
+
+            centeredTitle?.let { nonNullTitle ->
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = nonNullTitle,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            }
+        }
     }
 }
 
@@ -47,6 +52,7 @@ fun ActionBar(
 @Preview
 private fun ActionBarPreview() {
     ActionBar(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        centeredTitle = remember {"Profile" }
     )
 }

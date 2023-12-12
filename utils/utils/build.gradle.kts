@@ -7,3 +7,7 @@ java {
     sourceCompatibility = Config.javaVersion
     targetCompatibility = Config.javaVersion
 }
+dependencies {
+    implementation(Libs.Kotlin.coroutinesCore)
+    implementation(Libs.Koin.core)
+}

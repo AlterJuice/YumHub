@@ -1,6 +1,7 @@
 package com.alterjuice.compose_utils.ui.components
 
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -43,10 +44,9 @@ fun BrandText2(
                 append("Hub")
             }
         },
-        modifier = Modifier,
+        modifier = modifier,
         color = Color.Unspecified,
         fontStyle = FontStyle(R.font.kyiv_type_sans_regular),
-        fontWeight = FontWeight.W300,
-        lineHeight = 24.sp
+        style = MaterialTheme.typography.headlineSmall
     )
 }

@@ -41,24 +41,36 @@ android {
 dependencies {
     implementation(Libs.AndroidX.coreKtx)
     implementation(Libs.AndroidX.appCompat)
-    implementation(Libs.AndroidX.material)
+    implementation(Libs.Gson.library)
+    implementation(project(mapOf("path" to ":utils:android_utils")))
+    implementation(project(mapOf("path" to ":utils:compose_utils")))
+    implementation(project(mapOf("path" to ":utils:utils")))
+    implementation(project(mapOf("path" to ":theming")))
+    implementation(project(mapOf("path" to ":resources")))
+    implementation(project(mapOf("path" to ":domain")))
+    implementation(project(mapOf("path" to ":core:network")))
+    implementation(project(mapOf("path" to ":core:navigation")))
+    implementation(project(mapOf("path" to ":data")))
 
     val platform = platform(Libs.AndroidX.Compose.Bom.composeBOM)
     implementation(platform)
     debugImplementation(platform)
+    debugImplementation(Libs.AndroidX.Compose.Bom.composeUiTooling)
     implementation(Libs.AndroidX.Compose.Bom.composeUI)
     implementation(Libs.AndroidX.Compose.Bom.composeMaterial3)
-    debugImplementation(Libs.AndroidX.Compose.Bom.composeUiTooling)
     implementation(Libs.AndroidX.Compose.Bom.composeUiToolingPreview)
     implementation(Libs.AndroidX.Compose.activityCompose)
     implementation(Libs.AndroidX.Compose.Bom.composeRuntime)
     implementation(Libs.AndroidX.Compose.navigation)
-    implementation(Libs.AndroidX.Compose.Accompanist.insets)
-    implementation(Libs.AndroidX.Compose.Accompanist.insetsUI)
-    implementation(Libs.AndroidX.Compose.Accompanist.pager)
-    implementation(Libs.AndroidX.Compose.Accompanist.pagerIndicator)
+
     implementation(Libs.AndroidX.Compose.constraintLayout)
     // implementation("androidx.compose.material3:material3:1.2.0-alpha08") // Stable: 1.1.1
+
+
+    implementation(Libs.Koin.core)
+    implementation(Libs.Koin.android)
+    implementation(Libs.Koin.compose)
+
 
     implementation("io.coil-kt:coil-compose:2.4.0")
 

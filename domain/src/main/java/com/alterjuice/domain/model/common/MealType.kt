@@ -24,8 +24,7 @@ val foodTags = HashMap<String, List<MealCategories>>().apply {
             "2" to listOf(
                 MealCategories.CookTypeBaked,
                 MealCategories.TypeSeafood,
-                MealCategories.FlavorsSavory,
-                MealCategories.AllergensShellfish
+                MealCategories.FlavorsSavory
             ),
             "4" to listOf(
                 MealCategories.TypeSweets,
@@ -36,8 +35,7 @@ val foodTags = HashMap<String, List<MealCategories>>().apply {
             "7" to listOf(
                 MealCategories.TypeSweets,
                 MealCategories.TypeDessert,
-                MealCategories.FlavorsSweet,
-                MealCategories.AllergensNuts
+                MealCategories.FlavorsSweet
             ),
             "8" to listOf(MealCategories.TypeSeafood, MealCategories.FlavorsSavory)
 

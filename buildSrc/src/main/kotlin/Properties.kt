@@ -23,6 +23,8 @@ object YumHubProperties: PropsFile {
     const val DEBUG_GOOGLE_KEY = "DEBUG_GOOGLE_KEY"
     const val PIXABAY_API_KEY = "PIXABAY_API_KEY"
     const val OPEN_AI_API_KEY = "OPEN_AI_API_KEY"
+    const val NUTRITIONIX_APP_KEY = "NUTRITIONIX_APP_KEY"
+    const val NUTRITIONIX_APP_ID = "NUTRITIONIX_APP_ID"
 }
 
 

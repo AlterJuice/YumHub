@@ -1,43 +1,69 @@
 package com.alterjuice.meals.viewmodels
 
 import androidx.annotation.RestrictTo
-import com.alterjuice.domain.ResponsewItem
-import com.alterjuice.domain.jsonData
-import com.alterjuice.domain.model.dishes.*
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.alterjuice.data.analyzers.DayPart
+import com.alterjuice.data.analyzers.MealRecommendationEngine
+import com.alterjuice.data.data.getMealWithRecipeItemsAsYumHubMeals
+import com.alterjuice.database.category_history.CategoryEatenHistoryDao
+import com.alterjuice.domain.model.common.PredefinedYumHubMealFilters
+import com.alterjuice.domain.model.common.YumHubMeal
+import com.alterjuice.domain.repository.MealsHistoryRepository
+import com.alterjuice.repository.storage.UserInfoStorage
+import com.alterjuice.utils.RestartableJob
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-abstract class MealsViewModel {
-    abstract val actualCategories: StateFlow<List<PredefinedDishFilters>>
-    abstract fun getDishesByCategory(categories: PredefinedDishFilters): StateFlow<List<Dish>>
+abstract class MealsViewModel: ViewModel() {
+    abstract val actualCategories: StateFlow<List<PredefinedYumHubMealFilters>>
+    abstract val recommendations: StateFlow<List<YumHubMeal>>
+    abstract fun getDishesByCategory(categories: PredefinedYumHubMealFilters): List<YumHubMeal>
+    abstract fun updatedRecommendations()
 }
 
-internal class MealsViewModelImpl(): MealsViewModel() {
-    override val actualCategories = MutableStateFlow<List<PredefinedDishFilters>>(emptyList())
-    private val dishesByCategory = HashMap<PredefinedDishFilters, MutableStateFlow<List<Dish>>>()
+internal class MealsViewModelImpl(
+    private val userInfoStorage: UserInfoStorage,
+    private val categoriesEatenHistoryDao: CategoryEatenHistoryDao,
+    private val mealsHistoryRepository: MealsHistoryRepository
+): MealsViewModel() {
+    override val actualCategories = MutableStateFlow<List<PredefinedYumHubMealFilters>>(emptyList())
+    override val recommendations = MutableStateFlow<List<YumHubMeal>>(emptyList())
+    private val dishesByCategory = HashMap<PredefinedYumHubMealFilters, List<YumHubMeal>>()
 
-    private val dishes by lazy {
-        val g = Gson()
-        val x = TypeToken.getParameterized(List::class.java, ResponsewItem::class.java)
-        val items = g.fromJson<List<ResponsewItem>>(jsonData, x.type)
-        items.map {
-            it.toDomain()
+    val dishes by lazy {
+        getMealWithRecipeItemsAsYumHubMeals()
+    }
+
+    override fun getDishesByCategory(categories: PredefinedYumHubMealFilters): List<YumHubMeal> {
+        return dishesByCategory.getOrPut(categories) {
+            dishes.filter {
+                categories.check(it)
+            }
         }
     }
-    override fun getDishesByCategory(categories: PredefinedDishFilters): StateFlow<List<Dish>> {
-        return dishesByCategory.getOrPut(categories) {
-            MutableStateFlow(
-                dishes.filter {
-                    categories.check(it)
-                }
-            )
+
+    private val recommendationsLoaderJob = RestartableJob {
+        MealRecommendationEngine().recommendMeals(
+            userInfo = userInfoStorage.userInfo.get()!!,
+            dayPart = DayPart.Morning,
+            eatenCategories = categoriesEatenHistoryDao.getAllCategoriesAteCount().associate {
+                it.mealCategory to it.categoryAteCount
+            },
+            meals = dishes
+        ).let {
+            recommendations.value = it.map { it.first }
         }
     }
 
     init {
-        actualCategories.value = PredefinedDishFilters.values().toList()
+        actualCategories.value = PredefinedYumHubMealFilters.values().toList()
+
+    }
+
+    override fun updatedRecommendations() {
+        recommendationsLoaderJob.restart(viewModelScope, Dispatchers.Default)
     }
 
 }
@@ -45,9 +71,16 @@ internal class MealsViewModelImpl(): MealsViewModel() {
 
 @RestrictTo(RestrictTo.Scope.TESTS)
 object EmptyMealsViewModel: MealsViewModel() {
-    override val actualCategories = MutableStateFlow<List<PredefinedDishFilters>>(PredefinedDishFilters.values().toList())
-    override fun getDishesByCategory(categories: PredefinedDishFilters): StateFlow<List<Dish>> {
-        return MutableStateFlow(listOf(Dish.empty("dish 1"), Dish.empty("dish 2"), Dish.empty("dish 3"), Dish.empty("dish 4")))
+    override val actualCategories = MutableStateFlow<List<PredefinedYumHubMealFilters>>(
+        PredefinedYumHubMealFilters.values().toList())
+    override val recommendations = MutableStateFlow<List<YumHubMeal>>(emptyList())
+
+    override fun getDishesByCategory(categories: PredefinedYumHubMealFilters): List<YumHubMeal> {
+        return listOf(YumHubMeal.empty("dish 1"), YumHubMeal.empty("dish 2"), YumHubMeal.empty("dish 3"), YumHubMeal.empty("dish 4"))
+    }
+
+    override fun updatedRecommendations() {
+
     }
 
 }

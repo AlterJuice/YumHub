@@ -45,6 +45,7 @@ dependencies {
     implementation(project(mapOf("path" to ":utils:android_utils")))
     implementation(project(mapOf("path" to ":domain")))
     implementation(project(mapOf("path" to ":core:network")))
+    implementation(project(mapOf("path" to ":utils:utils")))
 
     testImplementation(Libs.Testing.junit)
     androidTestImplementation(Libs.Testing.junitExt)

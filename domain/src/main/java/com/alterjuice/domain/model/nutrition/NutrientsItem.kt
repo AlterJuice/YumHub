@@ -5,6 +5,8 @@ data class NutrientsItem(
 	val value: Double?
 )
 
+val NutrientsItem?.valueOrZero get() = this?.value?: 0.0
+
 
 fun List<Pair<NutritionAttr, Number?>>.toNutrients()
 	= this.map { NutrientsItem(it.first, it.second?.toDouble()) }

@@ -22,6 +22,18 @@ interface NutrientsHistoryDao {
     @Query("SELECT * FROM NutrientsHistory WHERE date = :dayTimestampSec LIMIT 1")
     fun getNutrientsHistoryFlowForDate(dayTimestampSec: Long): Flow<List<NutrientsHistoryDB>>
 
+    @Query("SELECT * FROM NutrientsHistory WHERE date BETWEEN :fromDayTimestampSec AND :toDayTimestampSec")
+    suspend fun getNutrientsHistoryForDates(
+        fromDayTimestampSec: Long,
+        toDayTimestampSec: Long
+    ): List<NutrientsHistoryDB>
+
+    @Query("SELECT * FROM NutrientsHistory WHERE date BETWEEN :fromDayTimestampSec AND :toDayTimestampSec")
+    fun getNutrientsHistoryFlowForDates(
+        fromDayTimestampSec: Long,
+        toDayTimestampSec: Long
+    ): Flow<List<NutrientsHistoryDB>>
+
 
     suspend fun updateNutrientsHistoryByAddingMealForDate(meal: YumHubMeal, dayTimestampSec: Long) {
         val old = getNutrientsHistoryForDate(dayTimestampSec).firstOrNull()

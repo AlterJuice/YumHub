@@ -41,6 +41,7 @@ dependencies {
 
     implementation(Libs.Koin.core)
     implementation(Libs.Koin.android)
+    implementation(Libs.Gson.library)
 
     testImplementation(Libs.Testing.junit)
     androidTestImplementation(Libs.Testing.junitExt)
