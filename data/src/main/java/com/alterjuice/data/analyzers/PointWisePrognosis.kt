@@ -1,14 +1,15 @@
 package com.alterjuice.data.analyzers
 
+import com.alterjuice.domain.model.common.MealCategories
 import com.alterjuice.domain.model.common.YumHubMeal
 import com.alterjuice.domain.model.nutrition.NutritionEnum
 import com.alterjuice.domain.model.nutrition.valueOrZero
 import com.alterjuice.domain.model.user.FitnessGoal
+import com.alterjuice.domain.model.user.UserInfo
 import com.alterjuice.domain.model.user.UserPAL
 
-class PointWisePrognosis {
+object PointWisePrognosis {
 
-    // Веса для нутриентов в зависимости от цели пользователя
     private val fatWeight = mapOf(
         FitnessGoal.LoseWeight to 0.7,
         FitnessGoal.BuildMuscle to 1.2,
@@ -21,7 +22,7 @@ class PointWisePrognosis {
         FitnessGoal.MaintainWeight to 1.0
     )
 
-    // Веса для нутриентов в зависимости от цели пользователя
+    // Додатковий коефіцієнт нутрієнтів (протеїн) в залежності від цілей користувача
     private val proteinWeight = mapOf(
         FitnessGoal.LoseWeight to 1.0,
         FitnessGoal.BuildMuscle to 1.2,
@@ -33,7 +34,6 @@ class PointWisePrognosis {
         FitnessGoal.MaintainWeight to 1.0
     )
 
-    // Веса для протеинов в зависимости от уровня PAL
     private val proteinPalWeight = mapOf(
         UserPAL.Sedentary to 0.8,
         UserPAL.LightlyActive to 1.0,
@@ -42,7 +42,6 @@ class PointWisePrognosis {
         UserPAL.ExtraActive to 1.5
     )
 
-    // Веса для углеводов в зависимости от уровня PAL
     private val carbsPalWeight = mapOf(
         UserPAL.Sedentary to 0.9,
         UserPAL.LightlyActive to 1.1,
@@ -51,7 +50,6 @@ class PointWisePrognosis {
         UserPAL.ExtraActive to 1.5
     )
 
-    // Веса для жира в зависимости от уровня PAL
     private val fatPalWeight = mapOf(
         UserPAL.Sedentary to 0.8,
         UserPAL.LightlyActive to 1.0,
@@ -60,7 +58,6 @@ class PointWisePrognosis {
         UserPAL.ExtraActive to 1.5
     )
 
-    // Веса для калорий в зависимости от уровня PAL
     private val caloriesPalWeight = mapOf(
         UserPAL.Sedentary to 0.9,
         UserPAL.LightlyActive to 1.1,
@@ -70,58 +67,80 @@ class PointWisePrognosis {
     )
 
 
-    // Веса для различных параметров
-    private val selectionWeight = 1.0 // Вес для количества раз, которое продукт был выбран
+    private val selectionWeight = 1.0
     private val goalWeight = 0.5
     private val palWeight = 0.5
 
 
     fun calculateWeightsForProductsNormalized(
         products: List<YumHubMeal>,
-        userGoal: FitnessGoal,
-        userPal: UserPAL
+        userInfo: UserInfo,
+        eatenCategories: Map<MealCategories, Int>,
     ): Map<YumHubMeal, Double/*from 0 to 1*/> {
-        val allWeights = calculateWeightsForProducts(products, userGoal, userPal)
+        val allWeights = calculateWeightsForProducts(
+            products = products,
+            userInfo = userInfo,
+            eatenCategories = eatenCategories
+        )
         val maxNonNormalizedWeight = allWeights.maxBy { it.second }.second
         return allWeights.map {
             it.copy(second = it.second.div(maxNonNormalizedWeight))
         }.toMap()
     }
 
-    // Метод для расчета матрицы предпочтений пользователя
+
+    private val favoriteWeight = 5.0
+    private val mainDishCategoryWeight = 3.5
+    private val eatenWeightCoefficient = 0.2
+
     fun calculateWeightsForProducts(
         products: List<YumHubMeal>,
-        userGoal: FitnessGoal,
-        userPal: UserPAL
+        userInfo: UserInfo,
+        eatenCategories: Map<MealCategories, Int>,
     ): List<Pair<YumHubMeal, Double>> {
         return products.map { product ->
-            val selectionScore = 0.0//product.selectionCount * selectionWeight
-            val goalScore = calculateGoalScore(product, userGoal)
-            val palScore = calculatePalScore(product, userPal)
+            val favoriteWeightToAdd = product.categoriesTags.count {
+                userInfo.favoriteCategories.contains(it)
+            } * favoriteWeight
+            val exactTypesWeights = product.categoriesTags.filter { it.isSpecifiedType() }.count {
+                userInfo.favoriteCategories.contains(it)
+            } * mainDishCategoryWeight
+            val eatenWeightToAdd = product.categoriesTags.sumOf {
+                calculateEatenWeight(eatenCategories, it)
+            }
+            val goalScore = calculateGoalScore(product, userInfo.fitnessGoal)
+            val palScore = calculatePalScore(product, userInfo.pal)
 
-            // Общий вес для продукта
-            val totalScore = selectionScore + (goalScore * goalWeight) + (palScore * palWeight)
+            // Загальна вага продукту
+            val totalScore = (goalScore * goalWeight) + (palScore * palWeight) +
+                    favoriteWeightToAdd + exactTypesWeights + eatenWeightToAdd
 
             product to totalScore
         }
     }
 
-    private fun calculateGoalScore(product: YumHubMeal, userGoal: FitnessGoal): Double {
-        val fatScore = product.nutrients.find { it.attr == NutritionEnum.Fat }?.value ?: 0.0
-        val caloriesScore = product.calories
+    // Calculate eaten weight with using a coefficient
+    private fun calculateEatenWeight(
+        eatenCategories: Map<MealCategories, Int>,
+        category: MealCategories
+    ): Double {
+        val timesEaten = eatenCategories.getOrElse(category) { 0 }
+        return timesEaten * eatenWeightCoefficient
+    }
 
+    private fun calculateGoalScore(product: YumHubMeal, userGoal: FitnessGoal): Double {
         val fatGoalWeight = fatWeight[userGoal] ?: 1.0
         val caloriesGoalWeight = caloriesWeight[userGoal] ?: 1.0
         val proteinGoalWeight = proteinWeight[userGoal] ?: 1.0
         val carbsGoalWeight = carbsWeight[userGoal] ?: 1.0
 
-        return (fatScore * fatGoalWeight) +
-                (caloriesScore * caloriesGoalWeight) +
-                (product.protein.valueOrZero * proteinGoalWeight) +
-                (product.carbs.valueOrZero * carbsGoalWeight)
+        return (product.withOneServing(NutritionEnum.Fat) * fatGoalWeight) +
+                (product.calories * caloriesGoalWeight) +
+                (product.withOneServing(NutritionEnum.Protein) * proteinGoalWeight) +
+                (product.withOneServing(NutritionEnum.Carbs) * carbsGoalWeight)
     }
 
-    // Метод для расчета веса в зависимости от уровня PAL
+
     private fun calculatePalScore(product: YumHubMeal, userPal: UserPAL): Double {
         val fatScore = product.nutrients.find { it.attr == NutritionEnum.Fat }?.value ?: 0.0
         val caloriesScore = product.calories

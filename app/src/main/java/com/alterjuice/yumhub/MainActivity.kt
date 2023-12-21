@@ -70,6 +70,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
             navController = rememberNavController()
             YumHubTheme {
                 val isBottomBarVisible = rememberSaveable { mutableStateOf(true) }
+                val isTopBarVisible = rememberSaveable { mutableStateOf(true) }
                 var currentRoute by remember {
                     mutableStateOf<NavCommand?>(null)
                 }
@@ -79,6 +80,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
                             DefinedRoutes.allRoutes.find { destination.route.equals(it.getDestination() ) }
                         currentRoute = navCommand
                         isBottomBarVisible.value = navCommand?.isBottomNavigationVisible ?: true
+                        isTopBarVisible.value = navCommand?.isTopBarVisible ?: true
                     }
                 }
                 CompositionLocalProvider(
@@ -89,6 +91,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
                             .navigationBarsPadding()
                             .imePadding(),
                         topBar = {
+                            if (!isTopBarVisible.value) return@Scaffold
                             val title = remember(currentRoute) {
                                 currentRoute?.topBarTitle
                             }

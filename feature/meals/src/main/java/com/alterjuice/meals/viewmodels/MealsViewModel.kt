@@ -3,8 +3,7 @@ package com.alterjuice.meals.viewmodels
 import androidx.annotation.RestrictTo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alterjuice.data.analyzers.DayPart
-import com.alterjuice.data.analyzers.MealRecommendationEngine
+import com.alterjuice.data.analyzers.PointWisePrognosis
 import com.alterjuice.data.data.getMealWithRecipeItemsAsYumHubMeals
 import com.alterjuice.database.category_history.CategoryEatenHistoryDao
 import com.alterjuice.domain.model.common.PredefinedYumHubMealFilters
@@ -45,14 +44,13 @@ internal class MealsViewModelImpl(
     }
 
     private val recommendationsLoaderJob = RestartableJob {
-        MealRecommendationEngine().recommendMeals(
+        PointWisePrognosis.calculateWeightsForProducts(
+            products = dishes,
             userInfo = userInfoStorage.userInfo.get()!!,
-            dayPart = DayPart.Morning,
             eatenCategories = categoriesEatenHistoryDao.getAllCategoriesAteCount().associate {
                 it.mealCategory to it.categoryAteCount
             },
-            meals = dishes
-        ).let {
+        ).sortedByDescending { it.second }.let {
             recommendations.value = it.map { it.first }
         }
     }

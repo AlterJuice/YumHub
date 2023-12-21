@@ -42,7 +42,9 @@ fun UserHistoryScreen(
     }
     val uiState by controller.uiState.collectAsState()
     val datePickerIsVisibleState = remember { mutableStateOf(false) }
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         YumHubCalendarBar(
             modifier = Modifier.fillMaxWidth(),
             historyDate = uiState.historyDate,

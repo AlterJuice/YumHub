@@ -10,6 +10,7 @@ import com.alterjuice.domain.model.MealsHistory
 import com.alterjuice.domain.model.MeasurementTypes
 import com.alterjuice.domain.model.common.YumHubMeal
 import com.alterjuice.domain.model.nutrition.NutrientsHistory
+import com.alterjuice.domain.model.user.UserInfo
 import com.alterjuice.domain.model.user.UserMeasurements
 import com.alterjuice.domain.repository.MealsHistoryRepository
 import com.alterjuice.domain.repository.NutrientsHistoryRepository
@@ -21,6 +22,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+
+sealed interface UserRegistrationStatus {
+    object NotRegistered: UserRegistrationStatus
+    data class InProgress(
+        val userInfoSnapshot: UserInfo
+    ): UserRegistrationStatus
+    data class Registered(
+        val userInfo: UserInfo
+    ): UserRegistrationStatus
+}
 
 sealed interface HistoryResults {
     class Single(

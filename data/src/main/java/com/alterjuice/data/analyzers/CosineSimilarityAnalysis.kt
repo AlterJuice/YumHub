@@ -1,14 +1,25 @@
 package com.alterjuice.data.analyzers
 
-import com.alterjuice.data.data.getMealWithRecipeItemsAsYumHubMeals
 import com.alterjuice.domain.model.common.YumHubMeal
 import com.alterjuice.domain.model.nutrition.NutrientsItem
+import com.alterjuice.domain.model.nutrition.NutritionEnum
+import com.alterjuice.utils.extensions.contains
 import kotlin.math.sqrt
 
-class SimilarityAnalyzer {
+class CosineSimilarityAnalysis {
     private val nutrientWeight = 0.3
     private val categoryWeight = 0.5
 
+    val mainNutrientsToCompare = listOf(
+        NutritionEnum.Protein,
+        NutritionEnum.Carbs,
+        NutritionEnum.Fat,
+        NutritionEnum.FatSat,
+        NutritionEnum.Sugars,
+        NutritionEnum.EnergyCalories
+    )
+
+    // Entry point for one meal
     fun calculateCosineSimilarityForMeal(
         productToAnalyze: YumHubMeal,
         products: List<YumHubMeal>,
@@ -24,7 +35,7 @@ class SimilarityAnalyzer {
     }
 
 
-    // Функция для создания матрицы схожести
+    // Entry point for all meals
     fun createSimilarityMatrixBetweenMeals(products: List<YumHubMeal>): Array<DoubleArray> {
         val matrixSize = products.size
 
@@ -44,6 +55,7 @@ class SimilarityAnalyzer {
         return similarityMatrix
     }
 
+    // Entry point for between two meals
     fun calculateOverallSimilarity(
         product1: YumHubMeal,
         product2: YumHubMeal
@@ -56,6 +68,7 @@ class SimilarityAnalyzer {
         )
     }
 
+    // Entry point for between two meals
     fun calculateOverallSimilarity(
         product1: YumHubMeal,
         product2: YumHubMeal,
@@ -68,22 +81,31 @@ class SimilarityAnalyzer {
         return (nutrientWeight * nutrientSimilarity + categoryWeight * categorySimilarity) / (nutrientWeight + categoryWeight)
     }
 
-    // Функция для расчета косинусного сходства между двумя продуктами
+
     private fun calculateCosineSimilarity(
         product1: YumHubMeal,
         product2: YumHubMeal
     ): Double {
-        val nutrients1 = product1.nutrients
-        val nutrients2 = product2.nutrients
+        val nutrients1 = product1.nutrients.filter { attr ->
+            mainNutrientsToCompare.contains {
+                it.attrID == attr.attr.attrID
+            }
+        }
+
+        val nutrients2 = product2.nutrients.filter { attr ->
+            mainNutrientsToCompare.contains {
+                it.attrID == attr.attr.attrID
+            }
+        }
 
         val dotProduct = nutrients1.mapNotNull { nutrient1 ->
             nutrients2.firstOrNull { it.attr.attrID == nutrient1.attr.attrID }?.let { nutrient2 ->
-                (nutrient1.value ?: 0.0) * (nutrient2.value ?: 0.0)
+                product1.withOneServing(nutrient1.attr) * product2.withOneServing(nutrient2.attr)
             }
         }.sum()
 
-        val magnitude1 = calculateMagnitude(nutrients1)
-        val magnitude2 = calculateMagnitude(nutrients2)
+        val magnitude1 = calculateMagnitude(product1, nutrients1)
+        val magnitude2 = calculateMagnitude(product2, nutrients2)
 
         return if (magnitude1 > 0 && magnitude2 > 0) {
             dotProduct / (magnitude1 * magnitude2)
@@ -106,28 +128,10 @@ class SimilarityAnalyzer {
         }
     }
 
-    // Функция для расчета длины вектора питательных характеристик
-    private fun calculateMagnitude(nutrients: List<NutrientsItem>): Double {
-        return nutrients.map { it.value ?: 0.0 }.toDoubleArray().let { vector ->
+    private fun calculateMagnitude(product: YumHubMeal, nutrients: List<NutrientsItem>): Double {
+        return nutrients.map { product.withOneServing(it.attr) }.toDoubleArray().let { vector ->
             sqrt(vector.fold(0.0) { acc, value -> acc + value * value })
         }
     }
 }
 
-
-// Пример использования
-fun mainEquality(): String {
-    val productList = getMealWithRecipeItemsAsYumHubMeals().let {
-        listOf(it.random(), it.random(), it.random())
-    }
-    val similarityMatrix = SimilarityAnalyzer().createSimilarityMatrixBetweenMeals(productList)
-
-    // Теперь у вас есть матрица схожести
-    return similarityMatrix.map {
-        it.joinToString()
-    }.joinToString("\n")
-}
-
-private fun main() {
-    mainEquality()
-}

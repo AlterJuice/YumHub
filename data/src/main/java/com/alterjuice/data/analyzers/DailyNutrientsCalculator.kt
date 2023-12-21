@@ -4,9 +4,9 @@ import com.alterjuice.domain.model.user.FitnessGoal
 import com.alterjuice.domain.model.user.UserInfo
 
 object DailyNutrientsCalculator {
-    private const val proteinRatio = 0.2 // from 0.15 to 0.25
+    private const val proteinRatio = 0.2
     private const val fatRatio = 0.15
-    private const val carbRatio = 0.25 // from 0.2 to 0.35
+    private const val carbRatio = 0.25
 
 
     fun predictDailyNutrients(

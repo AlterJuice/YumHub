@@ -101,7 +101,6 @@ fun AddMealScreen(
                             openSheetWithMeal(meal)
                         }
                 )
-
             }
         }
     }
@@ -126,14 +125,16 @@ fun AddMealScreen(
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                     onClick = rememberLambda {
                         controller.addMealToHistory(localMeal, mealType)
+                        navController.navigateUp()
                     }
                 ) {
                     Text(text = "Add as $mealType")
                 }
                 Spacer(
-                    Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .height(16.dp))
+                        .height(16.dp)
+                )
             }
         }
     }

@@ -69,6 +69,9 @@ sealed class YumHubMeal(val type: String): MainNutrients<NutrientsItem?> {
 
     override val mainNutrients: List<NutrientsItem?> get() = super.mainNutrients
 
+    fun withOneServing(nutrition: NutritionAttr): Double {
+        return withServings(1.0, nutrition)
+    }
 
     fun withServings(servingsCount: Double, nutrition: NutritionAttr): Double {
         val nutrient = nutrientBy(nutrition)

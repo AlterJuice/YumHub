@@ -3,6 +3,11 @@ package com.alterjuice.yumhub.navigation
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
@@ -11,8 +16,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.alterjuice.chat_assistant.ui.screens.ChatAssistantScreen
 import com.alterjuice.dashboard.ui.screens.DashboardScreen
+import com.alterjuice.data.data.getMealWithRecipeItemsAsYumHubMeals
 import com.alterjuice.domain.model.common.MealType
+import com.alterjuice.domain.model.common.YumHubMeal
 import com.alterjuice.meals.ui.screens.AddMealScreen
+import com.alterjuice.meals.ui.screens.MealInfoScreen
 import com.alterjuice.meals.ui.screens.MealItemScreen
 import com.alterjuice.meals.ui.screens.MealsScreen
 import com.alterjuice.navigation.NavCommand
@@ -58,7 +66,19 @@ internal fun YumHubNavHost(
         }
         composable(DefinedRoutes.MealPage) { b ->
             val mealID = b.arguments?.getString(DefinedRoutes.MealPage.argMealID) ?: ""
-            MealItemScreen(mealID = mealID)
+            var yumHubMeal by remember { mutableStateOf<YumHubMeal?>(null) }
+            LaunchedEffect(Unit) {
+                yumHubMeal = getMealWithRecipeItemsAsYumHubMeals().firstOrNull {
+                    it.id == mealID
+                }
+            }
+
+            if (yumHubMeal != null) {
+                MealInfoScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    yumHubMeal = yumHubMeal!!
+                )
+            }
         }
         composable(DefinedRoutes.AddMeal) { b ->
             val mealTypeArg = b.arguments?.getString(DefinedRoutes.AddMeal.argMealType)?: ""
@@ -67,9 +87,6 @@ internal fun YumHubNavHost(
                 modifier = Modifier.fillMaxSize(),
                 mealType = mealType
             )
-        }
-        composable(DefinedRoutes.Authentication) {
-
         }
 
         composable(DefinedRoutes.ChatAssistant) {

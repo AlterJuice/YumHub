@@ -23,8 +23,10 @@ object DefinedRoutes {
 
     val Meals = NavCommand.new("meals")
 
+
     object MealPage: NavCommand by NavCommand.new("meals_page",
-        isBottomNavigationVisible = false
+        isBottomNavigationVisible = false,
+        isTopBarVisible = false
     ) {
         const val argMealID = "mealID"
 
@@ -38,7 +40,7 @@ object DefinedRoutes {
 
     object AddMeal: NavCommand by NavCommand.new(
         rootRoute = "addMeal",
-        isBottomNavigationVisible = false,
+        isBottomNavigationVisible = false
     ) {
         const val argMealType = "mealType"
         override val arguments = listOf(

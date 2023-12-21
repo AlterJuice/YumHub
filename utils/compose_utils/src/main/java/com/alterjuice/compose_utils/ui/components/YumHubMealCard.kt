@@ -2,14 +2,18 @@ package com.alterjuice.compose_utils.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -36,9 +40,12 @@ fun YumHubMealCard(
     onClick: () -> Unit = {}
 ) {
     YumHubOutlinedCard(
-        modifier = modifier,
+        modifier = modifier.clickable {
+            onClick()
+        },
         contentPaddingValues = PaddingValues(12.dp),
-        backgroundAlpha = 0.5f
+        backgroundAlpha = 0.5f,
+
     ) {
         Column(Modifier.fillMaxWidth()) {
 
@@ -61,7 +68,7 @@ fun YumHubMealCard(
                         .background(
                             color = MaterialTheme.primaryVariantSchema.color,
                             shape = CircleShape
-                        )
+                        ).aspectRatio(1f)
                 )
 
                 Column(
