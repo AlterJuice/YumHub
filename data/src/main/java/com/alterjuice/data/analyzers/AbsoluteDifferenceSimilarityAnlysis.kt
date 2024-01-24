@@ -8,7 +8,7 @@ import kotlin.math.abs
 object AbsoluteDifferenceSimilarityAnlysis {
 
     val mainNutrientsToCompare = listOf(
-        NutritionEnum.Fiber,
+        NutritionEnum.Carbs,
         NutritionEnum.Fat,
         NutritionEnum.Protein,
         NutritionEnum.Sugars,

@@ -1,12 +1,51 @@
 package com.alterjuice.data.analyzers
 
+import com.alterjuice.data.data.getMealWithRecipeItemsAsYumHubMeals
 import com.alterjuice.domain.model.common.YumHubMeal
 import com.alterjuice.domain.model.nutrition.NutrientsItem
 import com.alterjuice.domain.model.nutrition.NutritionEnum
 import com.alterjuice.utils.extensions.contains
+import java.math.RoundingMode
 import kotlin.math.sqrt
 
-class CosineSimilarityAnalysis {
+fun check() {
+
+    fun Double.roundTo(digits: Int): Double {
+        return toBigDecimal().setScale(digits, RoundingMode.HALF_EVEN).toDouble()
+    }
+
+    fun Float.roundTo(digits: Int): Float {
+        return toBigDecimal().setScale(digits, RoundingMode.HALF_EVEN).toFloat()
+    }
+
+    fun Float.gracefulRound(digits: Int = 1): Number {
+        if (this == toBigDecimal().setScale(0, RoundingMode.HALF_EVEN).toFloat()) {
+            return this.toLong()
+        } else {
+            return roundTo(digits)
+        }
+    }
+
+    fun Double.gracefulRound(digits: Int = 1): Number {
+        if (this == toBigDecimal().setScale(0, RoundingMode.HALF_EVEN).toDouble()) {
+            return this.toLong()
+        } else {
+            return roundTo(digits)
+        }
+    }
+    AbsoluteDifferenceSimilarityAnlysis.createSimilarityMatrixBetweenMeals(getMealWithRecipeItemsAsYumHubMeals()).take(10).map { it.take(10).toDoubleArray().joinToString("|") { it.gracefulRound(5).toString() } }.joinToString("\n")
+
+    getMealWithRecipeItemsAsYumHubMeals().let {
+        listOf(it.get(1), it.get(9))
+    }.map { pr ->
+        AbsoluteDifferenceSimilarityAnlysis.mainNutrientsToCompare.map {
+            it to pr.withOneServing(it)
+        }
+    }
+}
+
+
+object CosineSimilarityAnalysis {
     private val nutrientWeight = 0.3
     private val categoryWeight = 0.5
 
